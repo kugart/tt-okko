@@ -1,0 +1,68 @@
+@startuml
+
+title ER диаграмма
+
+entity "transactions" {
+  * transaction_id : string
+  --
+  creation_ts : datetime
+  user_uid : string
+  amount : integer
+  consumption_mode : string
+  element_uid : string
+  element_type : string
+}
+
+entity "subscriptions" as subscriptions {
+  * user_subscription_uid : string
+  --
+  user_uid : string
+  creation_ts : datetime
+  transaction_id : string
+  subscription_uid : string
+  start_ts : datetime
+  end_ts : datetime
+  auto_prolongate : boolean
+}
+
+entity "conversions" as conversions {
+  * user_uid : string
+  * conv_ts : datetime
+  * element_uid : string
+  --
+
+}
+
+entity "users" as users {
+  * user_uid : string
+  --
+  registration_time : datetime
+  phone : string
+  mail : string
+}
+
+entity "dictionary_content" as content {
+  * element_uid : string
+  --
+  title : string
+}
+
+entity "merged" as merged {
+  * previous : string
+  * current : string
+  --
+}
+
+transactions::user_uid --> users::user_uid
+transactions::element_uid --> content::element_uid
+
+subscriptions::user_uid --> users::user_uid
+subscriptions::transaction_id --> transactions::transaction_id
+
+conversions::user_uid --> users::user_uid
+conversions::element_uid --> content::element_uid
+
+merged::previous --> users::user_uid
+merged::current --> users::user_uid
+
+@enduml
